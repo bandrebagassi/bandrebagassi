@@ -1,0 +1,44 @@
+# Disable Guest account
+
+sudo defaults write /Library/Preferences/com.apple.AppleFileServer guestAccess -int 0
+sudo dscl . -append /Users/guest AuthenticationAuthority ";DisabledUser;"
+
+exit 0
+
+# Disable TimeMachine
+
+sudo tmutil disable
+
+exit 0
+
+# Firewall settings
+
+launchctl unload /System/Library/LaunchAgents/com.apple.alf.useragent.plist
+sudo launchctl unload /System/Library/LaunchDaemons/com.apple.alf.agent.plist
+
+# Enable firewall by default
+sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1
+
+# Enable stealth mode
+sudo defaults write /Library/Preferences/com.apple.alf stealthenabled -int 1
+
+# Give network access to signed software
+sudo defaults write /Library/Preferences/com.apple.alf allowsignedenabled -int 1
+
+# Reload the firewall daemon and agent
+sudo launchctl load /System/Library/LaunchDaemons/com.apple.alf.agent.plist
+launchctl load /System/Library/LaunchAgents/com.apple.alf.useragent.plist
+
+exit 0
+
+# No .DS_Store on the network
+
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+
+exit 0
+
+# Use secure virtual memory
+
+sudo defaults write /Library/Preferences/com.apple.virtualMemory UseEncryptedSwap -bool yes
+
+exit 0
